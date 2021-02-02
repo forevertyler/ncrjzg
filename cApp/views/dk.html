@@ -1,0 +1,473 @@
+<script  src="../assets/js/header.js"></script>
+    <title>打卡</title>
+    <style>
+    .title {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      font-size: 17px;
+      color: #030303;
+    }
+
+    .back {
+      width: 12px;
+      height: 21px;
+      margin-left: 10px;
+    }
+
+    h4 {
+      flex: 1;
+      text-align: center;
+    }
+
+    #allmap {
+      width: 100%;
+      height: 60vh;
+    }
+
+    .circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fafafa;
+      text-align: center;
+      margin: 80px auto;
+      font-size: 12px;
+      box-shadow: 0 0 0 15px rgba(48, 52, 207, 0.5),
+        0 0 0 30px rgba(48, 52, 207, 0.3),
+        0 0 0 45px rgba(48, 52, 207, 0.1);
+    }
+
+    .time {
+      padding-top: 20px;
+      font-size: 14px;
+    }
+    .BMap_cpyCtrl {
+        display: none;
+    }
+    .anchorBL {
+        display: none;
+    }
+    .disc{
+    	width: 100%;
+    	font-size: 12px;
+    	color: #777;
+    	margin-bottom: 10px;
+    	
+    }
+    .disc span{margin-left: 30px;position: relative;line-height: 1.5em;}
+    .disc span:before {
+    	content: "";
+	    position: absolute;
+	    left: -21px;
+	    top: -4px;
+	    width: 20px;
+	    height: 20px;
+
+	}
+	.disc span:nth-child(1):before{
+		background: url("../assets/images/rengongbaojie.png") no-repeat center;
+		-webkit-background-size: 100%;
+		background-size: 100%;
+
+
+	}
+	.disc span:nth-child(2):before{
+		background: url("../assets/images/lajiche.png") no-repeat center;
+		-webkit-background-size: 100%;
+		background-size: 100%;
+
+
+	}
+	.BMap_noprint div:nth-child(3){display: none;}
+</style>
+<style>
+		#video {
+		  width: 100%;
+		}
+
+		.is-hidden {
+		  display: none;
+		}
+
+		.iconfont {
+		  font-size: 24px;
+		}
+
+		.btns {
+		  margin-bottom: 10px;
+		}
+
+		#btnScreenshot {
+		  font-size: 20px;
+		}
+
+		.video-screenshot {
+			width: 90%;
+			height: calc(100% - 2em);
+			margin: 0 auto;
+		  /*display: grid;
+		  grid-template-columns: 1fr 1fr;
+		  grid-column-gap: 10px;*/
+		}
+		#screenshotsContainer img{
+			margin-top: 20px;
+			border-radius: 10px;
+		}
+		 @media screen and (max-width: 800px) {
+		 	.layui-btn-lg {
+			  /*  height: 88px;
+			    line-height: 88px;
+			    padding: 0 25px;*/
+			    /*font-size: 32px;*/
+			}
+		 }
+		 .cover_logo{
+	         width: 100%;
+	         height: 100%;
+	         position: fixed;
+	         top:0;
+	         left:0;
+	         right:0;
+	         bottom:0;
+	         z-index: 10000;
+	         display: none;
+	         color: #fff;
+
+	       }
+	       .cover_logo div{
+	         width: 100%;
+	         height: 100%;
+	         position: relative;
+	        
+	       }
+	       .cover_logo div div{
+	         position: absolute;
+	         top:0;
+	         left:0;
+	         right:0;
+	         bottom:0;
+	         z-index: 30;
+	         background-color: #000;
+	         opacity: .8;
+	         /*font-size: 4rem;*/
+
+
+	       }
+	      
+	       .tcc{
+	       	width: 40%;
+	       	height: 40vh;
+	       }
+	       #tc{
+	       	width: 20rem;
+	       	height: 2em;
+	       	margin: 0 auto;
+	       	margin-top: 40%;
+	       }
+	       #tc span{
+	       	width: 40%;
+	       	height: 3rem;
+	       	line-height: 3rem;
+	       	background-color: teal;
+	       	padding:.5rem;
+	       	border-radius: 8px;
+	       }
+	       #tc span:nth-child(1){
+				/*margin-right:2rem;*/
+	       }
+
+	
+    </style>
+</head>
+<body class="layui-view-body">
+<div class="tit-top"><button type="button" class="layui-btn layui-btn-primary layui-btn-sm layui-btn-sm-a">返回</button>打卡</div>
+
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+  <ul class="layui-tab-title">
+    <li class="layui-this">地点打卡</li>
+    <li>拍照汇报</li>
+  </ul>
+  <div class="layui-tab-content" style="height: 100px;">
+    <div class="layui-tab-item layui-show">
+		<div class="title">
+			      <!-- <img src="../../images/back.png" alt="" class="back" /> -->
+			      <h4>地点打卡</h4>
+			</div>
+			<div class="disc"><span>为保洁员打卡点</span><span>为垃圾车打卡点</span><br><span>请到指定位置打卡</span></div>
+			<div id="allmap"></div>
+			<div class="circle" onclick="punch()">
+			      <div class="time"></div>
+			      <div>地点打卡</div>
+			</div>
+
+    </div>
+    <div class="layui-tab-item">
+
+		<div class="layui-card">
+          <div class="layui-card-header">工作汇报</div>
+          <div class="layui-card-body">
+          		<span style="color:#aaa;">*点击拍照区域进行拍照，拍照成功的照片双击照片可进行删除重拍</span>
+				<div class="btns">
+				 <!--  <button type="button" class="layui-btn layui-btn-lg"  id="btnScreenshot">
+				    <i class="layui-icon">&#xe65d;</i>
+				  </button> -->
+				</div>
+				<div class="video-screenshot">
+				  <video autoplay id="video"></video>
+				</div>
+				<div>	
+					<form action="">
+						<div id="screenshotsContainer">
+					      <canvas id="canvas" class="is-hidden"></canvas>
+					    </div>
+						<div class="layui-form-item layui-form-text">
+						    <!-- <label class="layui-form-label">描述：</label> -->
+						    <!-- <div class="layui-input-block"> -->
+						      <textarea placeholder="请描述一下" class="layui-textarea"></textarea>
+						    <!-- </div> -->
+						</div>
+					    
+					 	 <button id="shangchuan" type="button" class="layui-btn layui-btn-lg"><i class="layui-icon"></i>上传照片</button>
+					  
+
+					    
+					</form>
+				</div>
+					  
+					
+          		</div>
+		</div>
+            
+
+    </div>
+    
+  </div>
+</div> 
+
+<script src="../assets/js/footer.js"></script>
+<!-- <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&amp;ak=ofrEsOYB1CTMwAZn8sSfcrciSo7rAdKO"></script> -->
+<script src="https://api.map.baidu.com/api?v=2.0&ak=ofrEsOYB1CTMwAZn8sSfcrciSo7rAdKO&s=1" type="text/javascript"></script>
+<script type="text/javascript">
+layui.use(['element', 'laydate','table','upload'], function(){
+    	var table = layui.table
+    	,admin = layui.element
+    	,laydate = layui.laydate
+    	, $ = layui.jquery
+    	,upload = layui.upload;
+		var time = document.querySelector('.time')
+		var myDate = new Date();
+		time.innerHTML = myDate.getHours() + ':' + myDate.getMinutes(); // 获取当前时间
+
+		var map = new BMap.Map("allmap");
+		var point = new BMap.Point();
+		map.centerAndZoom(new BMap.Point(120.419443,37.333465), 17);
+		// map.centerAndZoom(point, 17);
+		var pointAttendance
+		var geolocation = new BMap.Geolocation();
+
+		map.addControl(new BMap.MapTypeControl());
+		map.setCurrentCity("烟台"); 
+		map.enableScrollWheelZoom(true); 
+
+		geolocation.getCurrentPosition(function (r) {
+		     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+		            var mk = new BMap.Marker(r.point);
+		            map.addOverlay(mk); // 标出自己的当前所在地
+		            // map.panTo(r.point); // 地图中心移动到自己的当前位置
+		            point = new BMap.Point(r.point.lng, r.point.lat); // 获取自己当前位置经纬度
+
+		            var coordinate = "120.419443,37.333465";// 设置考勤点经纬度 
+		            var arr = coordinate.split(",");// 切割经纬度
+		            var lon = arr[0];
+		            var lat = arr[1];
+		            pointAttendance = new BMap.Point(lon, lat);
+		            // var circle = new BMap.Circle(pointAttendance, 50, { // 考勤地点范围
+		            //       fillColor: "blue", // 圆形颜色
+		            //       strokeWeight: 1,
+		            //       fillOpacity: 0.2,
+		            //       strokeOpacity: 0.2
+		            // });
+		            // map.addOverlay(circle);
+		            // var r = new BMap.Marker(pointAttendance);
+		            map.addOverlay(r); // 标出考勤点的位置
+		         } else {
+		            alert('failed' + this.getStatus());
+		          }
+		  }, { enableHighAccuracy: true })
+
+		// 签到
+		// function signIn() {
+		signIn=function() {
+		    var distance = map.getDistance(point, pointAttendance).toFixed(2);
+		    if (distance <= 500) {
+		      this.GetLocation()
+		    } else {
+		      alert("超出考勤地点范围，签到失败")
+		    }
+		}
+
+		// 地址逆解析
+		GetLocation=function() {
+		// function GetLocation() { 
+		    var geoc = new BMap.Geocoder();
+		    geoc.getLocation(point, function (rs) {// 获取当前定位所在详细地址
+		            var addComp = rs.addressComponents;
+		            var address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+		            alert("您已在" + address + "签到成功")
+		    });
+		}
+		var points1 = [
+	        [120.416038,37.332303],
+	        [120.417458,37.332203],
+	        [120.420638,37.333465],
+	        [120.4192,37.330768]
+	    ];
+	    var points2 = [
+	        [120.414826,37.330538],
+	        [120.418302,37.334799]
+	    ];
+	    // 向地图添加标注
+	    for( var i = 0;i < points1.length; i++){
+	        var myIcon = new BMap.Icon("../assets/images/bj.png", new BMap.Size(23, 25), {
+	            // 指定定位位置
+	            offset: new BMap.Size(10, 25),
+	            // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+	            imageOffset: new BMap.Size(0, 0 - i * 25) // 设置图片偏移  
+	        });
+	        var point = new BMap.Point(points1[i][0],points1[i][1]);
+	        // 创建标注对象并添加到地图 
+	        var marker = new BMap.Marker(point,{icon: myIcon});
+	        map.addOverlay(marker);
+	    };
+
+	    for( var j = 0;j < points2.length; j++){
+	        var myIcon1 = new BMap.Icon("../assets/images/ljc.png", new BMap.Size(23, 25), {
+	            // 指定定位位置
+	            offset: new BMap.Size(10, 25),
+	            // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+	            imageOffset: new BMap.Size(0, 0 - j * 25) // 设置图片偏移  
+	        });
+	        var point1 = new BMap.Point(points2[j][0],points2[j][1]);
+	        // 创建标注对象并添加到地图 
+	        var marker1 = new BMap.Marker(point1,{icon: myIcon1});
+	        map.addOverlay(marker1);
+	    };
+
+		// 点击签到
+		// function punch() {
+		punch=function() {
+		    this.signIn()
+		}
+})
+</script>
+<script>
+layui.use(['element', 'laydate','table','upload'], function(){
+ 		var table = layui.table
+    	,admin = layui.element
+    	,laydate = layui.laydate
+    	, $ = layui.jquery
+    	,upload = layui.upload;
+    	var photoLength = 6;
+
+		window.onload = async function () {
+		  if (
+		    !"mediaDevices" in navigator ||
+		    !"getUserMedia" in navigator.mediaDevices
+		  ) {
+		    document.write('当前浏览器不支持Camera API，请更新浏览器。')
+		    return;
+		  }
+
+		  const video = document.querySelector("#video");
+		  const canvas = document.querySelector("#canvas");
+		  const screenshotsContainer = document.querySelector("#screenshotsContainer");
+		  let videoStream = null
+		  let useFrontCamera = false; // 前置摄像头
+		  const constraints = {
+		    video: {
+		      width: {
+		        min: 1280,
+		        ideal: 1920,
+		        max: 2560,
+		      },
+		      height: {
+		        min: 720,
+		        ideal: 1080,
+		        max: 1440,
+		      }
+		    },
+		  };
+	
+		  // 截图
+		  // btnScreenshot.addEventListener("click", function () {
+		  video.addEventListener("click", function () {
+		  		
+		  		var parentDom=$('#screenshotsContainer').find("img");
+		  		var i=parentDom.length;
+		  	
+		  if (photoLength>i) {
+		  		alert("拍照成功，下滑看看效果吧")
+		  		console.log(i)
+		  		let img = document.getElementById('screenshot');
+			    if (!img) {
+			      img = document.createElement("img");
+			      img.className = 'screenshot';
+			      img.style.width = '100%';
+			      // var closes = document.createElement("span");
+			      // closes.id = 'close'+i;
+			      // closes.class = 'closethis'
+			    }
+			    canvas.width = video.videoWidth;
+			    canvas.height = video.videoHeight;
+			    canvas.getContext("2d").drawImage(video, 0, 0);
+			    img.src = canvas.toDataURL("image/png");
+			    screenshotsContainer.prepend(img);
+			  }else{
+			  	alert("最多拍6张")
+			  }
+		    // return i;
+		  });
+		  $('#screenshotsContainer').on('dblclick','img',function(){
+		  		$(".cover_logo").show();
+		  		var b = $(this)
+		  		$(".cover_logo").on('click','.sure',function(){
+		  			b.remove();
+		  			$(".cover_logo").hide();
+		  			
+		  		})
+		  		$(".cover_logo").on('click','.cancel',function(){
+		  			
+		  			$(".cover_logo").hide();
+		  			
+		  		})
+		  		
+		  });
+		  $("#shangchuan").click(function(){
+		  		var img_a = $("#screenshotsContainer").find("img").length;
+		  	
+		  		if(img_a>0){
+		  			alert("上传成功");
+		  			$("#screenshotsContainer").find("img").remove();
+		  		}else{
+		  			alert("请拍几张照片吧")
+		  		}
+
+		  	  
+		  	  
+		  })
+
+		  async function init() {
+		    // stopVideoStream();
+		    constraints.video.facingMode = useFrontCamera ? "user" : "environment";
+		    try {
+		      videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+		      video.srcObject = videoStream;
+		    } catch (error) {
+		      console.log(error)
+		    }
+		  }
+		  init();
+		}  
+});
+</script>

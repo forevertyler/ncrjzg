@@ -1,0 +1,212 @@
+<script  src="../assets/js/header.js"></script>
+    <title>综合查询-信息查询</title>
+    <style>
+		.hilite
+		{ 
+		    background-color: #fff;  
+		}
+		#bjy{text-align: center;}
+    </style>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+        
+            <div class="">
+		        <div class="layui-card">
+		          <div class="layui-card-header">综合查询-信息查询</div>
+		          <div class="layui-card-body">
+			        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+						  <ul class="layui-tab-title">
+						    <li class="layui-this">保洁员信息</li>
+						    <li>垃圾车信息</li>
+						  </ul>
+						  <div class="layui-tab-content">
+						    <div class="layui-tab-item layui-show">
+						    <div class="layui-form layui-form-pane" >
+						    	<div class="layui-form-item">
+						    		<label class="layui-form-label">姓 名</label>
+                                  <div class="layui-input-inline liiw">
+                                    <input type="text" class="layui-input" id="name" placeholder="请输入姓名" >
+                                  </div>
+                                  <label class="layui-form-label">起始时间</label>
+                                  <div class="layui-input-inline liiw">
+                                    <input type="text" class="layui-input" id="bjyqs" placeholder="年-月-日" readonly="readonly">
+                                  </div>
+                                
+                                <div class="layui-inline liw">
+                                  <label class="layui-form-label">结束时间</label>
+                                  <div class="layui-input-inline liiw">
+                                    <input type="text" class="layui-input" id="bjyjs" placeholder="年-月-日"  readonly="readonly">
+                                  </div>
+                                </div>
+
+                                <div class="xpl-dc-unpopup-btns layui-inline"><a id="bjycx" class="layui-btn  ">查询</a></div>
+                            </div>
+
+								<table class="layui-hide" id="bjy" ></table>
+								<script type="text/html" id="pic_zao">
+					              <a class="layui-btn layui-btn-xs layui-btn-a" lay-event="check_zao" data-method="check_zao">查看</a>
+					            </script>
+								
+						    </div>
+								<table class="layui-hide" id="bjy" ></table>
+								
+						    </div>
+						    <div class="layui-tab-item">
+						    <div class="layui-form layui-form-pane" >
+						    	<div class="layui-form-item">
+						    	<label class="layui-form-label">车辆</label>
+                                  <div class="layui-input-inline liiw">
+                                    <input type="text" class="layui-input" id="carname" placeholder="请输入车辆">
+                                  </div>
+                                  <label class="layui-form-label">起始时间</label>
+                                  <div class="layui-input-inline liiw">
+                                    <input type="text" class="layui-input" id="ljcqs" placeholder="年-月-日" readonly="readonly">
+                                  </div>
+                                
+                                <div class="layui-inline liw">
+                                  <label class="layui-form-label">结束时间</label>
+                                  <div class="layui-input-inline liiw">
+                                    <input type="text" class="layui-input" id="ljcjs" placeholder="年-月-日"  readonly="readonly">
+                                  </div>
+                                </div>
+
+                                <div class="xpl-dc-unpopup-btns layui-inline"><a id="ljccx" class="layui-btn  ">查询</a></div>
+                                </div>
+                            </div>
+						    	<table class="layui-hide" id="ljc" ></table>
+
+						    </div>
+						  </div>
+					</div> 
+		       
+		          </div>
+		        </div>
+		      </div>
+		    </div>
+            
+        </div>
+    </div>
+<script src="../assets/js/footer.js"></script>
+<script>
+
+    layui.use(['element', 'laydate','table','upload'], function(){
+    	var table = layui.table
+    	,admin = layui.element
+    	,laydate = layui.laydate
+    	, $ = layui.jquery
+    	,upload = layui.upload;
+
+    //选完文件后不自动上传
+	 
+		//年月选择器
+	laydate.render({
+        elem: '#bjyqs'
+        
+      });
+      laydate.render({
+        elem: '#bjyjs'
+        
+      });
+      laydate.render({
+        elem: '#ljcqs'
+        
+      });
+      laydate.render({
+        elem: '#ljcjs'
+        
+      });
+	table.render({
+	    elem: '#bjy'
+	    // ,url:'/demo/table/user/'
+	    ,cols: [[
+	      {field:'id', width:80, align:'center',title: 'ID'}
+	      ,{field:'username', width:80, align:'center',title: '用户名'}
+	      ,{field:'sex', width:80, align:'center',title: '性别'}
+	      ,{field:'phone', width:180, align:'center',title: '电话'}
+	      ,{field:'idCard',width:180, align:'center',title: '身份证号'}
+	      ,{field:'jiguan', width:80, align:'center',title: '籍贯', }
+	      ,{field:'classify', width:80, align:'center',title: '职业'}
+	      ,{field:'dangyuan', width:80, align:'center',title: '党员'}
+	    ]]
+	    ,data: [{
+	      "id": "1"
+	      ,"username": "杜甫"
+	      ,"sex": "男"
+	      ,"phone": "13000000000"
+	      ,"idCard": "37Xxxxxxxxxxxxxxxx"
+	      ,"jiguan": "金财"
+	      ,"classify": "务农"
+	      ,"dangyuan": "是"
+	    }, {
+	      "id": "2"
+	      ,"username": "李白"
+	      ,"sex": "男"
+	      ,"phone": "13000000000"
+	      ,"idCard": "37Xxxxxxxxxxxxxxxx"
+	      ,"jiguan": "金财"
+	      ,"classify": "务农"
+	      ,"dangyuan": "否"
+	    }, {
+	      "id": "3"
+	      ,"username": "白居易"
+	      ,"sex": "男"
+	      ,"phone": "13000000000"
+	      ,"idCard": "37Xxxxxxxxxxxxxxxx"
+	      ,"jiguan": "金财"
+	      ,"classify": "务农"
+	      ,"dangyuan": "否"
+	    }, {
+	      "id": "4"
+	      ,"username": "王勃"
+	      ,"sex": "男"
+	      ,"phone": "13000000000"
+	      ,"idCard": "37Xxxxxxxxxxxxxxxx"
+	      ,"jiguan": "金财"
+	      ,"classify": "务农"
+	      ,"dangyuan": "否"
+	    }]
+	    ,page: true
+	});
+	table.render({
+	    elem: '#ljc'
+	    // ,url:'/demo/table/user/'
+	    ,cols: [[
+	      {field:'id', width:80, align:'center',title: 'ID'}
+	      ,{field:'car', width:80, align:'center',title: '车辆'}
+	      ,{field:'br', width:80, align:'center',title: '品牌'}
+	      ,{field:'comp', width:100, align:'center',title: '所属公司'}
+	      ,{field:'driver',width:80, align:'center',title: '驾驶员'}
+	      ,{field:'sex', width:80, align:'center',title: '性别', }
+	      ,{field:'phone', width:180, align:'center',title: '电话'}
+	      ,{field:'nianfen', width:100, align:'center',title: '车辆年限'}
+	    ]]
+	    ,data: [{
+	      "id": "1"
+	      ,"car": "车辆1"
+	      ,"br": "金财牌"
+	      ,"comp": "金财"
+	      ,"driver": "驾驶员1"
+	      ,"sex": "男"
+	      ,"phone": "130xxxxxxxx"
+	      ,"nianfen": "2030年"
+	    }, {
+	      "id": "2"
+	      ,"car": "车辆2"
+	      ,"br": "金财牌"
+	      ,"comp": "金财"
+	      ,"driver": "驾驶员2"
+	      ,"sex": "男"
+	      ,"phone": "130xxxxxxxx"
+	      ,"nianfen": "2030年"
+	    }]
+	    ,page: true
+	});
+
+
+    
+   
+  
+  });
+</script>

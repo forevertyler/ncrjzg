@@ -1,0 +1,200 @@
+<script  src="../assets/js/header.js"></script>
+    <title>打卡</title>
+    <style>
+    .title {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      font-size: 17px;
+      color: #030303;
+    }
+
+    .back {
+      width: 12px;
+      height: 21px;
+      margin-left: 10px;
+    }
+
+    h4 {
+      flex: 1;
+      text-align: center;
+    }
+
+    #allmap {
+      width: 100%;
+      height: 100%;
+    }
+
+    .circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fafafa;
+      text-align: center;
+      margin: 80px auto;
+      font-size: 12px;
+      box-shadow: 0 0 0 15px rgba(48, 52, 207, 0.5),
+        0 0 0 30px rgba(48, 52, 207, 0.3),
+        0 0 0 45px rgba(48, 52, 207, 0.1);
+    }
+
+    .time {
+      padding-top: 20px;
+      font-size: 14px;
+    }
+    .BMap_cpyCtrl {
+        display: none;
+    }
+    .anchorBL {
+        display: none;
+    }
+    .ceng{
+    	position: absolute;
+	    height: 100%;
+	    width: 100%;
+	    left: 0px;
+	    top: 0px;
+	    z-index: 300;
+	    background-color: #000;
+	    opacity: .5;
+	    color: #fff;
+    }
+    .disc{
+    	width: 100%;
+    	font-size: 12px;
+    	color: #777;
+    	
+    }
+    .disc span{margin-left: 30px;position: relative;}
+    .disc span:before {
+    	content: "";
+	    position: absolute;
+	    left: -21px;
+	    top: -4px;
+	    width: 20px;
+	    height: 20px;
+	}
+	.disc span:nth-child(1):before{
+		background: url("../assets/images/rengongbaojie.png") no-repeat center;
+		-webkit-background-size: 100%;
+		background-size: 100%;
+
+
+	}
+	.disc span:nth-child(2):before{
+		background: url("../assets/images/lajiche.png") no-repeat center;
+		-webkit-background-size: 100%;
+		background-size: 100%;
+
+
+	}
+</style>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+        	<div class="layui-card">
+	          <div class="layui-card-header">金财村环境数据一张图</div>
+	          <div class="layui-card-body" style="position:relative;">
+	          	<!-- <div class="ceng">dddd</div> -->
+	          	<div class="disc"><span>为垃圾点</span><span>为垃圾车</span></div>
+	          	<div id="allmap">
+	          	    
+
+
+	          	</div>
+	          </div>
+	        </div>
+			<!-- <div id="allmap"></div>
+			<div class="circle" onclick="punch()">
+			      <div class="time"></div>
+			      <div>地点打卡</div>
+			</div> -->
+        </div>
+    </div>
+<script src="../assets/js/footer.js"></script>
+<script src="https://api.map.baidu.com/api?v=2.0&ak=ofrEsOYB1CTMwAZn8sSfcrciSo7rAdKO&s=1" type="text/javascript"></script>
+<script type="text/javascript">
+layui.use(['element', 'laydate','table','upload'], function(){
+    	var table = layui.table
+    	,admin = layui.element
+    	,laydate = layui.laydate
+    	,$ = layui.jquery
+    	,upload = layui.upload;
+		
+		// var map = new BMap.Map("allmap", {mapType:BMAP_SATELLITE_MAP});
+		// var point = new BMap.Point(120.394614,37.360396);
+		// map.panTo(point);
+		// map.centerAndZoom(point, 15);
+		// map.enableScrollWheelZoom(true);
+		 var map = new BMap.Map("allmap");    // 创建Map实例
+	    map.centerAndZoom(new BMap.Point(120.419443,37.333465), 17);  // 初始化地图,设置中心点坐标和地图级别
+	    map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+	    map.setCurrentCity("烟台");          // 设置地图显示的城市 此项是必须设置的
+	    map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+		var points1 = [
+	        [120.416038,37.332303,"垃圾点1"],
+	        [120.417458,37.332203,"垃圾点2"],
+	        [120.420638,37.333465,"垃圾点3"],
+	        [120.4192,37.330768,"垃圾点4"]
+	    ];
+	    var points2 = [
+	        [120.414826,37.330538,"垃圾车1"],
+	        [120.418302,37.334799,"垃圾车2"]
+	    ];
+	    // 向地图添加标注
+	    for( var i = 0;i < points1.length; i++){
+	        var myIcon = new BMap.Icon("../assets/images/bj.png", new BMap.Size(23, 25), {
+	            // 指定定位位置
+	            offset: new BMap.Size(10, 25),
+	            // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+	            imageOffset: new BMap.Size(0, 0 - i * 25) // 设置图片偏移  
+	        });
+	        var point = new BMap.Point(points1[i][0],points1[i][1]);
+	        // 创建标注对象并添加到地图 
+	        var marker = new BMap.Marker(point,{icon: myIcon});
+	        // map.addOverlay(marker);
+	        var sContent1 =`
+                    <h4 style='margin:0 0 5px 0;padding:0.2em 0'> ${points1[i][2]} </h4>
+                    
+                    <p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>${points1[i][2]}</p>
+                    </div>
+                    `;
+            map.addOverlay(marker);               // 将标注添加到地图中
+            addClickHandler(sContent1,marker);
+	    };
+	    function addClickHandler(sContent1,marker){
+            marker.addEventListener("click",function(e){
+                openInfo(sContent1,e)}
+            );
+        }
+        function openInfo(sContent1,e){
+            var p = e.target;
+            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+            var infoWindow = new BMap.InfoWindow(sContent1);  // 创建信息窗口对象
+            map.openInfoWindow(infoWindow,point); //开启信息窗口
+        }
+
+
+
+
+	    for( var j = 0;j < points2.length; j++){
+	        var myIcon1 = new BMap.Icon("../assets/images/ljc.png", new BMap.Size(23, 25), {
+	            // 指定定位位置
+	            offset: new BMap.Size(10, 25),
+	            // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+	            imageOffset: new BMap.Size(0, 0 - j * 25) // 设置图片偏移  
+	        });
+	        var point1 = new BMap.Point(points2[j][0],points2[j][1]);
+	        // 创建标注对象并添加到地图 
+	        var marker1 = new BMap.Marker(point1,{icon: myIcon1});
+	        map.addOverlay(marker1);
+
+
+	    };
+
+		
+
+		
+})
+</script>

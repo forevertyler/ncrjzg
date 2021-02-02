@@ -1,0 +1,521 @@
+<script  src="../assets/js/header.js"></script>
+    <title>消息通知</title>
+    <style>
+		.hilite
+		{ 
+		    background-color: #fff;  
+		}
+    </style>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+        
+            <div class="">
+             <div class="layui-card">
+		          <div class="layui-card-header">预警通知</div>
+		          <div class="layui-card-body">
+			        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" id="pic_cz">
+						  <ul class="layui-tab-title">
+						    <li class="layui-this">保洁员</li>
+						    <!-- <li>垃圾车</li> -->
+						  </ul>
+						  <div class="layui-tab-content" id="">
+						    <div class="layui-tab-item layui-show">
+						    	<span style="font-size:12px;color:#aaa;">*绿色为早点，红色为晚点，黑色正常</span>
+								<table class="layui-hide" id="bjy" ></table>
+								<script type="text/html" id="pic_zao">
+					              <a class="layui-btn layui-btn-xs layui-btn-a layui-btn-a-zao" lay-event="check_zao" data-method="check_zao">查看</a>
+					            </script>
+								
+						    </div>
+						    <!-- <div class="layui-tab-item">
+						    	<span style="font-size:12px;color:#aaa;">*绿色为早点，红色为晚点，黑色正常</span>
+						    	<table class="layui-hide" id="ljc" ></table>
+
+						    </div> -->
+						  </div>
+					</div> 
+		       
+		          </div>
+		        </div>
+		        <div class="layui-card">
+		          <div class="layui-card-header">工作通知</div>
+		          <div class="layui-card-body">
+		          <div class="layui-form layui-form-pane" >
+					    <div class="layui-form-item">
+						
+					    
+							<div class="layui-inline">
+						      <label class="layui-form-label">关键字</label>
+						      <div class="layui-input-inline">
+						        <input type="text" name="title" lay-verify="title" autocomplete="on" placeholder="请输入关键字" class="layui-input">
+						      </div>
+						    </div>
+					   
+							<div class="layui-inline">
+						      <label class="layui-form-label">起始时间</label>
+						      <div class="layui-input-inline">
+						        <input type="text" class="layui-input" id="qs" placeholder="年-月-日" readonly="readonly">
+						      </div>
+						    </div>
+						    <div class="layui-inline">
+						      <label class="layui-form-label">结束时间</label>
+						      <div class="layui-input-inline">
+						        <input type="text" class="layui-input" id="js" placeholder="年-月-日"  readonly="readonly">
+						      </div>
+						    </div>
+
+							<div class="xpl-dc-unpopup-btns layui-inline"><a id="xpl-unpopup-query330406110590616" class="layui-btn xpl-unpopup-query" ))="">查询</a></div>
+					    </div>
+
+					</div>
+		  
+
+		            <table class="layui-hide" id="test-table-operate" lay-filter="test-table-operate"></table>
+		            
+		            <script type="text/html" id="test-table-operate-xiangqing">
+		             
+		              <!-- <a class="layui-btn layui-btn-xs" lay-event="xiangqing">详情</a> -->
+		            
+		            </script>
+		          </div>
+		        </div>
+		       
+		      
+		    </div>
+            <div class="layui-carousel" id="test2" style="display: none; text-align: center ">
+			    <div carousel-item="" id="lunbo">
+			    </div>
+			</div>
+        </div>
+
+    </div>
+<script src="../assets/js/footer.js"></script>
+<script>
+
+  layui.use(['element', 'laydate','table','upload'], function(){
+    	var table = layui.table
+    	,admin = layui.element
+    	,table1 = layui.table
+    	,laydate = layui.laydate
+    	,upload = layui.upload;
+
+    //选完文件后不自动上传
+	  upload.render({
+	    elem: '#xzwj'
+	    ,url: 'https://httpbin.org/post' //改成您自己的上传接口
+	    ,auto: false
+	    ,accept: 'file'
+	    //,multiple: true
+	    ,bindAction: '#kssc'
+	    ,done: function(res){
+	      layer.msg('上传成功');
+	      // console.log(res)
+	    }
+	  });
+		//年月选择器
+	  laydate.render({
+	    elem: '#qs'
+	    // ,format: 'yyyy年MM月dd日'
+	  });
+	  laydate.render({
+	    elem: '#js'
+	    // ,format: 'yyyy年MM月dd日'
+	  });
+    table.render({
+      elem: '#test-table-operate',
+      even:true,
+      done: function(res, curr, count){
+      	var that = this.elem.next();
+      	res.data.forEach(function(item,index){
+      		if(index % 2 ==0){
+      			var tr = that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","#fff");
+      		}else{
+      			var tr = that.find(".layui-table-box tbody tr[data-index='"+index+"']").css("background-color","#f3faff");
+       		}
+      	})
+  
+	
+	  },
+    
+      cols: [[
+        // {type:'checkbox', fixed: 'left'}
+        {field:'id', align:'center', width:80, title: 'ID'}
+        ,{field:'username', align:'center', width:180, title: '户主姓名'}
+        ,{field:'idcardno', align:'center', width:380, title: '身份证号'}
+        ,{field:'myd', align:'center', width:80, title: '满意度'}
+        ,{field:'sign', align:'center', width: 160, title: '施工评分'}
+        ,{field:'experience', align:'center', width:160, title: '效果评分'}
+        ,{field:'wealth', align:'center', width:135, title: '反馈意见'}
+        ,{field:'score', align:'center', width:180, title: '改造后图片'}
+        ,{field:'classify', align:'center', width:80, title: '操作' ,toolbar: '#test-table-operate-xiangqing'}
+        // ,{width:178, align:'center', toolbar: '#test-table-operate-barDemo'}
+      ]]
+      ,page: true
+      ,"data":[{"id":1,"username":"user-1","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"1","experience":4,"logins":58,"wealth":64928690,"score":27},{"id":2,"username":"user-2","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"2","experience":0,"logins":77,"wealth":6298078,"score":31},{"id":3,"username":"user-3","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"3","experience":2,"logins":157,"wealth":37117017,"score":68},{"id":4,"username":"user-4","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"4","experience":7,"logins":51,"wealth":76263262,"score":6},{"id":5,"username":"user-5","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"5","experience":3,"logins":68,"wealth":60344147,"score":87},{"id":6,"username":"user-6","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"6","experience":2,"logins":37,"wealth":57768166,"score":34},{"id":7,"username":"user-7","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"7","experience":7,"logins":150,"wealth":82030578,"score":28},{"id":8,"username":"user-8","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"8","experience":1,"logins":133,"wealth":16503371,"score":14},{"id":9,"username":"user-9","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"9","experience":4,"logins":25,"wealth":86801934,"score":75},{"id":10,"username":"user-9","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"9","experience":4,"logins":25,"wealth":86801934,"score":75},{"id":11,"username":"user-1","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"1","experience":4,"logins":58,"wealth":64928690,"score":27},{"id":12,"username":"user-2","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"2","experience":0,"logins":77,"wealth":6298078,"score":31},{"id":13,"username":"user-3","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"3","experience":2,"logins":157,"wealth":37117017,"score":68},{"id":14,"username":"user-4","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"4","experience":7,"logins":51,"wealth":76263262,"score":6},{"id":15,"username":"user-5","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"5","experience":3,"logins":68,"wealth":60344147,"score":87},{"id":16,"username":"user-6","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"6","experience":2,"logins":37,"wealth":57768166,"score":34},{"id":17,"username":"user-7","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"7","experience":7,"logins":150,"wealth":82030578,"score":28},{"id":18,"username":"user-8","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"8","experience":1,"logins":133,"wealth":16503371,"score":14},{"id":19,"username":"user-9","idcardno":"370XXXXXXXxxxx","myd":"满意","sign":"9","experience":4,"logins":25,"wealth":86801934,"score":75}]
+    });
+    
+    //监听表格复选框选择
+    table.on('checkbox(test-table-operate)', function(obj){
+      console.log(obj)
+    });
+    //监听工具条
+    table.on('tool(test-table-operate)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'detail'){
+        layer.msg('ID：'+ data.id + ' 的查看操作');
+      } else if(obj.event === 'del'){
+        layer.confirm('删除本行？', function(index){
+          obj.del();
+          layer.close(index);
+        });
+      } else if(obj.event === 'xiangqing'){
+        layer.open({
+	    		type: 2
+	    		,title: "修改本条信息"
+	    		,area: ['50%', '80%']
+	    		,content: './nhfk_edit.html',
+	    		success: function(layero, index){
+	    			var body = layer.getChildFrame('body', index);
+	    		    var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象
+	    		    // body.find('#classid1').val(data1.classid);
+	    		    // body.find('#classname1').val(data1.classname);
+	    		    // body.find('#grade1').val(data1.grade);
+	    		    
+	    		    //为弹框页面专业下拉框赋值
+	    		 //    $.ajax({
+	    			// 	url : '../../MajorFindAllServlet?deptid=5',
+	    			// 	dataType : 'json',
+	    			// 	data : {
+	    			// 		'state' : 0
+	    			// 	}, //查询状态为正常的所有机构类型
+	    			// 	type : 'post',
+	    			// 	success : function(data) {
+	    			// 		$.each(data, function(index, item) {
+	    			// 			if (item.majorid == data1.majorid) {
+	    			// 				body.find('#majorid1').append($("<option>").attr("value",item.majorid).attr("selected","selected").text(item.majorname));
+								// }else  {
+								// 	body.find('#majorid1').append($("<option>").attr("value",item.majorid).text(item.majorname));
+								// }
+	    			// 		});
+	    			// 		iframeWin.layui.form.render("select");
+	    			// 	}
+	    			// });
+	    		  }
+	    	 });
+      }
+    });
+    
+    var $ = layui.$, active = {
+      getCheckData: function(){ //获取选中数据
+        var checkStatus = table.checkStatus('test-table-operate')
+        ,data = checkStatus.data;
+        layer.alert(JSON.stringify(data));
+      }
+      ,getCheckLength: function(){ //获取选中数目
+        var checkStatus = table.checkStatus('test-table-operate')
+        ,data = checkStatus.data;
+        layer.msg('选中了：'+ data.length + ' 个');
+      }
+      ,isAll: function(){ //验证是否全选
+        var checkStatus = table.checkStatus('test-table-operate');
+        layer.msg(checkStatus.isAll ? '全选': '未全选')
+      }
+    };
+  
+	table.render({
+			    elem: '#bjy'
+			    // ,url:'/demo/table/user/'
+			    ,cols: [[
+			      {field:'id', width:80, align:'center',title: 'ID'}
+			      ,{field:'username', width:80, align:'center',title: '姓名'}
+			      ,{field:'phone', width:180, align:'center',title: '电话'}
+			      // ,{field:'phone', width:180, align:'center',title: '电话'}
+			      ,{field:'date_zao', width:180, align:'center',title: '7:00-8:00',templet:function(d){
+					  var date = d.date_zao;
+					  var dateArr = parseInt(date.replace(/:/ig, ""));
+					  var start_time = "7:00";
+					  var start_timeArr=parseInt(start_time.replace(/:/ig, ""));
+					  var end_time = "8:00";
+					  var end_timeArr=parseInt(end_time.replace(/:/ig, ""));
+					  var str  = "";
+					  if((dateArr < start_timeArr))
+					  str = "<span style='color:green'>"+d.date_zao+"</span>";
+					  else if((dateArr > end_timeArr))
+					  str = "<span style='color:red'>"+d.date_zao+"</span>";
+					  else
+					  str ="<span style=''>"+d.date_zao+"</span>";
+					
+					  return str;
+				  }}
+				  ,{ width:180, align:'center',title: '照片', toolbar: '#pic_zao'}
+			      ,{field:'date_zhong', width:180, align:'center',title: '14:00-15:00',templet:function(d){
+					  var date = d.date_zhong;
+					  var dateArr = parseInt(date.replace(/:/ig, ""));
+					  var start_time = "14:00";
+					  var start_timeArr=parseInt(start_time.replace(/:/ig, ""));
+					  var end_time = "15:00";
+					  var end_timeArr=parseInt(end_time.replace(/:/ig, ""));
+					  var str  = "";
+					  if((dateArr < start_timeArr))
+					  str = "<span style='color:green'>"+d.date_zhong+"</span>";
+					  else if((dateArr > end_timeArr))
+					  str = "<span style='color:red'>"+d.date_zhong+"</span>";
+					  else
+					  str ="<span style=''>"+d.date_zhong+"</span>";
+					
+					  return str;
+				  }}
+			      ,{field:'date_wan', width:180, align:'center',title: '18:00-19:00',templet:function(d){
+					  var date = d.date_wan;
+					  var dateArr = parseInt(date.replace(/:/ig, ""));
+					  var start_time = "18:00";
+					  var start_timeArr=parseInt(start_time.replace(/:/ig, ""));
+					  var end_time = "19:00";
+					  var end_timeArr=parseInt(end_time.replace(/:/ig, ""));
+					  var str  = "";
+					  if((dateArr < start_timeArr))
+					  str = "<span style='color:green'>"+d.date_wan+"</span>";
+					  else if((dateArr > end_timeArr))
+					  str = "<span style='color:red'>"+d.date_wan+"</span>";
+					  else
+					  str ="<span style=''>"+d.date_wan+"</span>";
+					  return str;
+				  }}
+			    ]]
+			    ,data: [{
+			      "id": "1"
+			      ,"username": "杜甫"
+			      ,"phone": "13000000000"
+			      ,"date_zao":"7:00"
+			      ,"pic_zao":"https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=02e5145c9e510fb36c147fc5b85aa3f0/6159252dd42a2834d0b36cee5bb5c9ea15cebf3a.jpg"
+			      ,"date_zhong":"14:30"
+			      ,"date_wan":"17:00"
+			     
+			    }, {
+			      "id": "2"
+			      ,"username": "杜甫"
+			      ,"phone": "13000000000"
+			      ,"date_zao":"9:01"
+			      ,"date_zhong":"14:01"
+			      ,"date_wan":"19:01"
+			    }, {
+			      "id": "3"
+			      ,"username": "杜甫"
+			      ,"phone": "13000000000"
+			      ,"date_zao":"4:00"
+			      ,"date_zhong":"15:00"
+			      ,"date_wan":"16:00"
+			    }, {
+			      "id": "4"
+			      ,"username": "杜甫"
+			      ,"phone": "13000000000"
+			      ,"date_zao":"8:10"
+			      ,"date_zhong":"15:10"
+			      ,"date_wan":"18:10"
+			    }]
+			    ,page: true
+			});
+
+			var active = {
+			    check_zao: function(){
+			      //示范一个公告层
+			      layer.open({
+			        type: 1
+			        ,title: "上午照片"
+			        ,closeBtn: false
+			        ,area: '60%;'
+			        ,shade: 0.8
+			        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+			        ,btn: ['确定', '取消']
+			        ,btnAlign: 'c'
+			        ,moveType: 1 //拖拽模式，0或者1
+			        ,content: '<div id="swzp" class="swzp" style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;"><img src="../assets/images/j.jpg" alt=""><img src="../assets/images/j.jpg" alt=""><img src="../assets/images/j.jpg" alt=""><img src="../assets/images/j.jpg" alt=""><img src="../assets/images/j.jpg" alt=""><img src="../assets/images/j.jpg" alt=""><img src="../assets/images/j.jpg" alt=""></div>'
+			        ,success: function(layero){
+			          var btn = layero.find('.layui-layer-btn');
+			   
+			          btn.find('.layui-layer-btn0').attr({
+			            
+			          });
+			        }
+			       
+			        
+			      });
+			    }
+			}
+
+			table.render({
+			    elem: '#ljc'
+			    // ,url:'/demo/table/user/'
+			    ,cols: [[
+			      {field:'id', width:80, align:'center',title: 'ID'}
+			      ,{field:'car', width:80, align:'center',title: '车辆'}
+			      ,{field:'br', width:80, align:'center',title: '品牌'}
+			      ,{field:'comp', width:100, align:'center',title: '所属公司'}
+			      ,{field:'driver',width:80, align:'center',title: '驾驶员'}
+			      ,{field:'phone', width:180, align:'center',title: '电话'}
+			      ,{field:'date_zao', width:180, align:'center',title: '7:00-8:00',templet:function(d){
+					  var date = d.date_zao;
+					  var dateArr = parseInt(date.replace(/:/ig, ""));
+					  var start_time = "7:00";
+					  var start_timeArr=parseInt(start_time.replace(/:/ig, ""));
+					  var end_time = "8:00";
+					  var end_timeArr=parseInt(end_time.replace(/:/ig, ""));
+					  var str  = "";
+					  if((dateArr < start_timeArr))
+					  str = "<span style='color:green'>"+d.date_zao+"</span>";
+					  else if((dateArr > end_timeArr))
+					  str = "<span style='color:red'>"+d.date_zao+"</span>";
+					  else
+					  str ="<span style=''>"+d.date_zao+"</span>";
+					
+					  return str;
+				  }}
+			      ,{field:'date_zhong', width:180, align:'center',title: '14:00-15:00',templet:function(d){
+					  var date = d.date_zhong;
+					  var dateArr = parseInt(date.replace(/:/ig, ""));
+					  var start_time = "14:00";
+					  var start_timeArr=parseInt(start_time.replace(/:/ig, ""));
+					  var end_time = "15:00";
+					  var end_timeArr=parseInt(end_time.replace(/:/ig, ""));
+					  var str  = "";
+					  if((dateArr < start_timeArr))
+					  str = "<span style='color:green'>"+d.date_zhong+"</span>";
+					  else if((dateArr > end_timeArr))
+					  str = "<span style='color:red'>"+d.date_zhong+"</span>";
+					  else
+					  str ="<span style=''>"+d.date_zhong+"</span>";
+					
+					  return str;
+				  }}
+			      ,{field:'date_wan', width:180, align:'center',title: '18:00-19:00',templet:function(d){
+					  var date = d.date_wan;
+					  var dateArr = parseInt(date.replace(/:/ig, ""));
+					  var start_time = "18:00";
+					  var start_timeArr=parseInt(start_time.replace(/:/ig, ""));
+					  var end_time = "19:00";
+					  var end_timeArr=parseInt(end_time.replace(/:/ig, ""));
+					  var str  = "";
+					  if((dateArr < start_timeArr))
+					  str = "<span style='color:green'>"+d.date_wan+"</span>";
+					  else if((dateArr > end_timeArr))
+					  str = "<span style='color:red'>"+d.date_wan+"</span>";
+					  else
+					  str ="<span style=''>"+d.date_wan+"</span>";
+					
+					  return str;
+				  }}
+			    ]]
+			    ,data: [{
+			      "id": "1"
+			      ,"car": "车辆1"
+			      ,"br": "金财牌"
+			      ,"comp": "金财"
+			      ,"driver": "驾驶员1"
+			      ,"phone": "130xxxxxxxx"
+			      ,"date_zao":"8:10"
+			      ,"date_zhong":"15:10"
+			      ,"date_wan":"18:10"
+			    }, {
+			      "id": "2"
+			      ,"car": "车辆2"
+			      ,"br": "金财牌"
+			      ,"comp": "金财"
+			      ,"driver": "驾驶员2"
+			      ,"phone": "130xxxxxxxx"
+			      ,"date_zao":"7:00"
+			      ,"date_zhong":"14:30"
+			      ,"date_wan":"17:00"
+			    }]
+			    ,page: true
+			});
+
+			var datazao = [{
+		      "id": "1"
+		      ,"username": "杜甫"
+		      ,"phone": "13000000000"
+		      ,"date_zao":"7:00"
+		      ,"pic_zao":["https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=02e5145c9e510fb36c147fc5b85aa3f0/6159252dd42a2834d0b36cee5bb5c9ea15cebf3a.jpg","https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=02e5145c9e510fb36c147fc5b85aa3f0/6159252dd42a2834d0b36cee5bb5c9ea15cebf3a.jpg","https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.gov.cn%2Fjrzg%2Fimages%2Fimages%2F1c6f6506c5d513eec26805.jpg&refer=http%3A%2F%2Fwww.gov.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614230115&t=face2d1ef1d7f81d92d9cc525faac184"]
+		      ,"date_zhong":"14:30"
+		      ,"date_wan":"17:00"
+		     
+		    }, {
+		      "id": "2"
+		      ,"username": "李白"
+		      ,"phone": "13000000000"
+		      ,"date_zao":"9:01"
+		      ,"pic_zao":["https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=02e5145c9e510fb36c147fc5b85aa3f0/6159252dd42a2834d0b36cee5bb5c9ea15cebf3a.jpg"]
+		      ,"date_zhong":"14:01"
+		      ,"date_wan":"19:01"
+		    }, {
+		      "id": "3"
+		      ,"username": "白居易"
+		      ,"phone": "13000000000"
+		      ,"date_zao":"4:00"
+		      ,"pic_zao":["https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=02e5145c9e510fb36c147fc5b85aa3f0/6159252dd42a2834d0b36cee5bb5c9ea15cebf3a.jpg"]
+		      ,"date_zhong":"15:00"
+		      ,"date_wan":"16:00"
+		    }, {
+		      "id": "4"
+		      ,"username": "王勃"
+		      ,"phone": "13000000000"
+		      ,"date_zao":"8:10"
+		      ,"pic_zao":["https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=02e5145c9e510fb36c147fc5b85aa3f0/6159252dd42a2834d0b36cee5bb5c9ea15cebf3a.jpg"]
+		      ,"date_zhong":"15:10"
+		      ,"date_wan":"18:10"
+		    }]
+
+		    
+	
+            $('#pic_cz .layui-btn-a-zao').on('click', function(){
+			
+			    var othis = $(this), method = othis.data('method');
+			    var index = othis.parents("tr").attr("data-index")
+
+			    var iii = `
+					    <div carousel-item="" id="lunbo">
+					    </div>
+		    	`
+		    	$("#test2").html(iii)
+			    layer.open({
+			        type: 1,
+			        title:"保洁员上午打卡",
+			        skin: 'layui-layer-rim',
+			        area: ['60%','80%'],
+			        offset: '3%',
+			        content: $("#test2"),
+			        success:function(){
+			       
+				            var urls = datazao[index].pic_zao;
+				            // var piclength = datazao.length
+				            console.log(urls.length)
+				            var html='';
+				            for (var i=0;i<urls.length;i++){
+				            	console.log(datazao[index].pic_zao)
+				                html+='<div ><img src="'+datazao[index].pic_zao[i]+'" style="width:100%;height:auto;margin:0 auto;display:inherit;"></div>';
+				                $("#lunbo").html(html);
+				            }
+				            layui.use('carousel', function(){
+				                var carousel = layui.carousel;
+				                carousel.render({
+				                    elem: '#test2'
+				                    ,width: '100%' 
+				                    ,height: '100%' 
+				                    ,arrow: 'always'
+				                });
+				            });
+
+				        
+				    }
+				});
+		   
+        
+    		});
+    
+
+		
+   
+  
+  });
+</script>

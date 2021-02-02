@@ -1,0 +1,116 @@
+<script  src="../assets/js/header.js"></script>
+    <title>农户反馈数据操作</title>
+    <style>
+		.hilite
+		{ 
+		    background-color: #fff;  
+		}
+    </style>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+        
+            <div class="">
+		        <div class="layui-card">
+		          <div class="layui-card-header">农户反馈</div>
+		          <div class="layui-card-body">
+		          <div class="layui-form layui-form-pane" >
+					    <div class="layui-form-item layui-form-text">
+					    <label class="layui-form-label">我要留言</label>
+					    <div class="layui-input-block">
+					      <textarea placeholder="请描述反馈信息" class="layui-textarea layui-textarea1"></textarea>
+					    </div>
+					  </div>
+					   <button id="fankui" type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+
+					</div>
+		  
+
+		            
+		          </div>
+		          
+		        </div>
+		        <div class="layui-card">
+		        	<div class="layui-card-header">留言板</div>
+		        	<div class="layui-card-body">
+		        		<div class="main"></div>
+		        	</div>
+		        </div>
+		      </div>
+		    </div>
+            
+        </div>
+    </div>
+<script src="../assets/js/footer.js"></script>
+<script>
+
+  layui.use(['element', 'laydate','table','upload'], function(){
+    	var table = layui.table
+    	,admin = layui.element
+    	,laydate = layui.laydate
+    	,upload = layui.upload
+    	,$=layui.$;
+	$('#fankui').on('click', function(){
+		var fankuiArea = $(".layui-textarea1").val();
+		var nowTime = new Date(); var year=nowTime.getFullYear(); var month=nowTime.getMonth()+1; var day=nowTime.getDate();
+		console.log(nowTime)
+		 var nowdate=year+"-"+month+"-"+day;
+		if (fankuiArea=="") {
+			return;
+		}else{
+			var str= "<div class='show'>";
+			str += "<div >";
+			str += "用户名：大熊";
+			str += "</div>"
+			str += "<div >";
+			str += fankuiArea;
+			str += "</div>"
+			str += "<div style='color:#999;'>";
+			str += nowdate;
+			str += "</div>"
+			str += "</div>"
+			str += "<hr></hr>"
+			$(".main").append(str);
+			$(".layui-textarea1").val("");
+		}
+    })
+
+    //选完文件后不自动上传
+	upload.render({
+	    elem: '#xzwj'
+	    ,url: 'https://httpbin.org/post' //改成您自己的上传接口
+	    ,auto: false
+	    ,accept: 'file'
+	    //,multiple: true
+	    ,bindAction: '#kssc'
+	    ,done: function(res){
+	      layer.msg('上传成功');
+	      // console.log(res)
+	    }
+	});
+	
+    
+    });
+    
+    var $ = layui.$, active = {
+      getCheckData: function(){ //获取选中数据
+        var checkStatus = table.checkStatus('test-table-operate')
+        ,data = checkStatus.data;
+        layer.alert(JSON.stringify(data));
+      }
+      ,getCheckLength: function(){ //获取选中数目
+        var checkStatus = table.checkStatus('test-table-operate')
+        ,data = checkStatus.data;
+        layer.msg('选中了：'+ data.length + ' 个');
+      }
+      ,isAll: function(){ //验证是否全选
+        var checkStatus = table.checkStatus('test-table-operate');
+        layer.msg(checkStatus.isAll ? '全选': '未全选')
+      }
+    };
+    
+   
+  
+
+</script>

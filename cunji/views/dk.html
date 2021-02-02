@@ -1,0 +1,215 @@
+<script  src="../assets/js/header.js"></script>
+    <title>打卡</title>
+    <style>
+    .title {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      font-size: 17px;
+      color: #030303;
+    }
+
+    .back {
+      width: 12px;
+      height: 21px;
+      margin-left: 10px;
+    }
+
+    h4 {
+      flex: 1;
+      text-align: center;
+    }
+
+    #allmap {
+      width: 100%;
+      height: 60vh;
+    }
+
+    .circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fafafa;
+      text-align: center;
+      margin: 80px auto;
+      font-size: 12px;
+      box-shadow: 0 0 0 15px rgba(48, 52, 207, 0.5),
+        0 0 0 30px rgba(48, 52, 207, 0.3),
+        0 0 0 45px rgba(48, 52, 207, 0.1);
+    }
+
+    .time {
+      padding-top: 20px;
+      font-size: 14px;
+    }
+    .BMap_cpyCtrl {
+        display: none;
+    }
+    .anchorBL {
+        display: none;
+    }
+    .disc{
+    	width: 100%;
+    	font-size: 12px;
+    	color: #777;
+    	margin-bottom: 10px;
+    	
+    }
+    .disc span{margin-left: 30px;position: relative;}
+    .disc span:before {
+    	content: "";
+	    position: absolute;
+	    left: -21px;
+	    top: -4px;
+	    width: 20px;
+	    height: 20px;
+	}
+	.disc span:nth-child(1):before{
+		background: url("../assets/images/rengongbaojie.png") no-repeat center;
+		-webkit-background-size: 100%;
+		background-size: 100%;
+
+
+	}
+	.disc span:nth-child(2):before{
+		background: url("../assets/images/lajiche.png") no-repeat center;
+		-webkit-background-size: 100%;
+		background-size: 100%;
+
+
+	}
+</style>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+        
+            <div class="title">
+			      <!-- <img src="../../images/back.png" alt="" class="back" /> -->
+			      <h4>南坞党村地点打卡</h4>
+			</div>
+			<div class="disc"><span>为保洁员打卡点</span><span>为垃圾车打卡点</span><span>请到指定位置打卡</span></div>
+			<div id="allmap"></div>
+			<div class="circle" onclick="punch()">
+			      <div class="time"></div>
+			      <div>地点打卡</div>
+			</div>
+            
+        </div>
+    </div>
+<script src="../assets/js/footer.js"></script>
+<!-- <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&amp;ak=ofrEsOYB1CTMwAZn8sSfcrciSo7rAdKO"></script> -->
+<script src="https://api.map.baidu.com/api?v=2.0&ak=ofrEsOYB1CTMwAZn8sSfcrciSo7rAdKO&s=1" type="text/javascript"></script>
+<script type="text/javascript">
+layui.use(['element', 'laydate','table','upload'], function(){
+    	var table = layui.table
+    	,admin = layui.element
+    	,laydate = layui.laydate
+    	, $ = layui.jquery
+    	,upload = layui.upload;
+		var time = document.querySelector('.time')
+		var myDate = new Date();
+		time.innerHTML = myDate.getHours() + ':' + myDate.getMinutes(); // 获取当前时间
+
+		var map = new BMap.Map("allmap");
+		var point = new BMap.Point();
+		map.centerAndZoom(new BMap.Point(120.419443,37.333465), 17);
+		// map.centerAndZoom(point, 17);
+		var pointAttendance
+		var geolocation = new BMap.Geolocation();
+
+		map.addControl(new BMap.MapTypeControl());
+		map.setCurrentCity("烟台"); 
+		map.enableScrollWheelZoom(true); 
+
+		geolocation.getCurrentPosition(function (r) {
+		     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+		            var mk = new BMap.Marker(r.point);
+		            map.addOverlay(mk); // 标出自己的当前所在地
+		            // map.panTo(r.point); // 地图中心移动到自己的当前位置
+		            point = new BMap.Point(r.point.lng, r.point.lat); // 获取自己当前位置经纬度
+
+		            var coordinate = "120.419443,37.333465";// 设置考勤点经纬度 
+		            var arr = coordinate.split(",");// 切割经纬度
+		            var lon = arr[0];
+		            var lat = arr[1];
+		            pointAttendance = new BMap.Point(lon, lat);
+		            // var circle = new BMap.Circle(pointAttendance, 50, { // 考勤地点范围
+		            //       fillColor: "blue", // 圆形颜色
+		            //       strokeWeight: 1,
+		            //       fillOpacity: 0.2,
+		            //       strokeOpacity: 0.2
+		            // });
+		            // map.addOverlay(circle);
+		            // var r = new BMap.Marker(pointAttendance);
+		            map.addOverlay(r); // 标出考勤点的位置
+		         } else {
+		            alert('failed' + this.getStatus());
+		          }
+		  }, { enableHighAccuracy: true })
+
+		// 签到
+		// function signIn() {
+		signIn=function() {
+		    var distance = map.getDistance(point, pointAttendance).toFixed(2);
+		    if (distance <= 500) {
+		      this.GetLocation()
+		    } else {
+		      alert("超出考勤地点范围，签到失败")
+		    }
+		}
+
+		// 地址逆解析
+		GetLocation=function() {
+		// function GetLocation() { 
+		    var geoc = new BMap.Geocoder();
+		    geoc.getLocation(point, function (rs) {// 获取当前定位所在详细地址
+		            var addComp = rs.addressComponents;
+		            var address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+		            alert("您已在" + address + "签到成功")
+		    });
+		}
+		var points1 = [
+	        [120.416038,37.332303],
+	        [120.417458,37.332203],
+	        [120.420638,37.333465],
+	        [120.4192,37.330768]
+	    ];
+	    var points2 = [
+	        [120.414826,37.330538],
+	        [120.418302,37.334799]
+	    ];
+	    // 向地图添加标注
+	    for( var i = 0;i < points1.length; i++){
+	        var myIcon = new BMap.Icon("../assets/images/bj.png", new BMap.Size(23, 25), {
+	            // 指定定位位置
+	            offset: new BMap.Size(10, 25),
+	            // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+	            imageOffset: new BMap.Size(0, 0 - i * 25) // 设置图片偏移  
+	        });
+	        var point = new BMap.Point(points1[i][0],points1[i][1]);
+	        // 创建标注对象并添加到地图 
+	        var marker = new BMap.Marker(point,{icon: myIcon});
+	        map.addOverlay(marker);
+	    };
+
+	    for( var j = 0;j < points2.length; j++){
+	        var myIcon1 = new BMap.Icon("../assets/images/ljc.png", new BMap.Size(23, 25), {
+	            // 指定定位位置
+	            offset: new BMap.Size(10, 25),
+	            // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+	            imageOffset: new BMap.Size(0, 0 - j * 25) // 设置图片偏移  
+	        });
+	        var point1 = new BMap.Point(points2[j][0],points2[j][1]);
+	        // 创建标注对象并添加到地图 
+	        var marker1 = new BMap.Marker(point1,{icon: myIcon1});
+	        map.addOverlay(marker1);
+	    };
+
+		// 点击签到
+		// function punch() {
+		punch=function() {
+		    this.signIn()
+		}
+})
+</script>
