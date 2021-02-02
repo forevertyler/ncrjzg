@@ -224,7 +224,7 @@
 						<div class="layui-form-item layui-form-text">
 						    <!-- <label class="layui-form-label">描述：</label> -->
 						    <!-- <div class="layui-input-block"> -->
-						      <textarea placeholder="请描述一下" class="layui-textarea" style="margin-top:.3em;"></textarea>
+						      <textarea placeholder="请描述一下" class="layui-textarea layui-textarea1" style="margin-top:.3em;"></textarea>
 						    <!-- </div> -->
 						</div>
 					    
@@ -454,7 +454,7 @@ layui.use(['element', 'laydate','table','upload'], function(){
 		  		if(img_a>0){
 		  			alert("上传成功");
 		  			$("#screenshotsContainer").find("img").remove();
-		  			$(".layui-textarea").val("");
+		  			$(".layui-textarea1").val("");
 		  		}else{
 		  			alert("请拍几张照片吧")
 		  		}
